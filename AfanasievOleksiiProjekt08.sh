@@ -17,7 +17,7 @@ counter(){
 }
 
 
-#Funkcja sprawdza któraz podanych liczb jest większa i przypisuje ją do a i b.
+#Funkcja sprawdza któraz podanych liczb jest większa i123 przypisuje ją do a i b.
 greaterNumber() {
 	if  [ $1 -le $2 ]; then
 		a=$2
