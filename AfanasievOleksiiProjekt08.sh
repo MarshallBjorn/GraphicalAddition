@@ -1,5 +1,7 @@
 #!bin/bash
 
+#POCZĄTEK
+#CZĘŚĆ FUNKCYJNA
 #Funckja zlicza ilość cyfr liczby.
 counter(){
 	value=$1
@@ -17,7 +19,7 @@ counter(){
 }
 
 
-#Funkcja sprawdza któraz podanych liczb jest większa i123 przypisuje ją do a i b.
+#Funkcja sprawdza która z podanych liczb jest większa i123 przypisuje ją do a i b.
 greaterNumber() {
 	if  [ $1 -le $2 ]; then
 		a=$2
@@ -29,7 +31,7 @@ greaterNumber() {
 }
 
 
-#Funkcja co odpowiada za narysowanie linii po podaniu liczb
+#Funkcja co odpowiada za narysowanie linii po podaniu liczb.
 graphicFunc() {
 	str=""
 	value=$(($1+1))
@@ -39,16 +41,17 @@ graphicFunc() {
 	fi
 	for i in $(seq 1 $value);
 	do
-		str+="-"
+		str+="—"
 	done
 	echo $str
 }
 
-#Funkcja co wizualizuje część pisemnego dodawania gdzie po dodaniu dwóch cyfr ich suma wynosi >= 10
+#Funkcja co wizualizuje część pisemnego dodawania gdzie po dodaniu dwóch cyfr ich suma wynosi >= 10.
 additionalDigits() {
 	copyA=$1
 	copyB=$2
 	aditional=0
+	cosm=0
 	str=""
 
 	for i in $(seq 1 $counterA)
@@ -57,8 +60,9 @@ additionalDigits() {
 		digitB=$(($copyB%10))
 		digitSum=$(($digitA+$digitB+$aditional))
 
-		if [ $copyB -gt 0 ] && [ $digitSum -ge 10 ]; then
+		if [ $digitSum -ge 10 ]; then
 			aditional=1
+			cosm=1
 			temp="1"
 			str=$temp$str
 		else
@@ -73,27 +77,41 @@ additionalDigits() {
 		temp="0"
 		str=$temp$str
 	fi
-	echo $str | sed 's/0/ /g'
+	if [ $cosm -eq 1 ]; then
+		echo $str | sed 's/0/ /g'
+	fi
 }
 
 
-#Zczytanie od użytkownika dwóch liczb
-echo "Podaj dwie liczby naturalne, mniejsze od 2^63-1"
-read val1
-read val2
-re='^[0-9]+$'
+#CZĘŚĆ ARYTMETYCZNA ORAZ OBSLUGI BLĘDÓW
+#Zczytanie od użytkownika dwóch liczb oraz ustalenie regularnego wyrażenia.
+echo
+echo "Podaj dwie liczby naturalne, które zawierają co najwyżej 18 znaków..."
+read -p "Pierwsza liczba: " val1
+read -p "Druga liczba: " val2
+re=^[\-0-9]+$
+echo
 
-if ! [[ $val1 =~ $re ]] || ! [[ $val2 =~ $re ]]; then
-	echo "Błąd no.1: Podany został tekst zamiast liczby"
+#Moduł odpowiadający za rozpoznanie i obsługe znanych błedów ta niepoprawnie wprowadzonych danych.
+if [ -z $val1 ] || [ -z $val2 ]; then
+	echo "Błąd no.1: Jedna albo obydwie liczby nie zostały podane."
 	exit 1
+fi
+if ! [ ${#val1} -le 18 ] || ! [ ${#val2} -le 18 ]; then
+	echo "Błąd no.2 Liczby powienny zawierać co najwyżej 18 cyfr."
+	exit 1
+fi
+if ! [[ $val1 =~ $re ]] || ! [[ $val2 =~ $re ]]; then
+        echo "Błąd no.3: Podany został tekst zamiast liczby."
+        exit 1
 fi
 if [ $val1 -lt 0 ] || [ $val2 -lt 0 ]; then
-	echo "Błąd no.2: Liczba jest mniejsza od zera"
+	echo "Błąd no.4: Jedna albo obydwi de z podanych liczb są mniejsze od zera."
 	exit 1
 fi
 
 
-#Uzyskanie wyniku oraz tworzenie zmiennych a i b, gdzie a >= b
+#Uzyskanie wyniku oraz tworzenie zmiennych a i b, gdzie a >= b.
 result=$((val1+val2))
 greaterNumber $val1 $val2
 
@@ -102,6 +120,9 @@ greaterNumber $val1 $val2
 counterA=$(counter $a)
 counterB=$(counter $b)
 
+
+#CZĘŚĆ GRAFICZNA
+#Wyświetlenie dodatkowych liczb symulujących pisemne dodawanie.
 additionalDigits $a $b
 
 #Wyświetlenie pierwszej liczby.
@@ -140,3 +161,4 @@ elif [ $counterResult -gt $counterA ]; then
 else
 	echo " $result"
 fi
+#KONIEC
